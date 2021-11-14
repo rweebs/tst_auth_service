@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 DATABASE_USER = "bowo"
 DATABASE_PASSWORD = "password"
 DATABASE_URI = "128.199.151.55"
-DATABASE_NAME = "startup"
+DATABASE_NAME = "rpl"
 SQLALCHEMY_DATABASE_URL = f"mysql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_URI}:3306/{DATABASE_NAME}"
 
 engine = create_engine(
