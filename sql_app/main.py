@@ -54,6 +54,11 @@ async def read_users_me(current_user: schemas.User = Depends(crud.get_current_us
 
 @app.post("/users/", response_model=schemas.User, tags=["user"])
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    request = dict(user)
+    for key, value in request.items():
+        if value == "":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="All fields are required")
     regex_email = "^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$"
     if not re.search(regex_email, user.email):
         raise HTTPException(status_code=404, detail="Email not valid")
