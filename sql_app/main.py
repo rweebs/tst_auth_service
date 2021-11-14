@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import get_db, engine
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import re
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -53,6 +54,9 @@ async def read_users_me(current_user: schemas.User = Depends(crud.get_current_us
 
 @app.post("/users/", response_model=schemas.User, tags=["user"])
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    regex_email = "^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$"
+    if not re.search(regex_email, user.email):
+        raise HTTPException(status_code=404, detail="Email not valid")
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
