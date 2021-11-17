@@ -106,7 +106,7 @@ def read_user(email: str, db: Session = Depends(get_db), current_user: schemas.U
     return db_user
 
 
-@app.get("/api")
+@app.get("/api/init")
 def root(db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email="asdf")
     if db_user is None:
