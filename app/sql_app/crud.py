@@ -86,6 +86,16 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
+def init_user(db: Session):
+    hashed_password = get_password_hash("asdf")
+    db_user = models.User(email="asdf", password=hashed_password, username="asdf",
+                          tanggal_lahir=datetime.now(), alamat="asdf", no_telp="asdf")
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

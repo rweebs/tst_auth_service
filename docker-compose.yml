@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tst
+    volumes:
+      - my-datavolume:/var/lib/mysql
+
+  web:
+    build: ./app
+    command: uvicorn sql_app.main:app --host=0.0.0.0 --port=8000
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 5000:8000
+    depends_on:
+      - db
+    environment:
+      - WAIT_HOSTS=mysql:3306
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
+volumes:
+  my-datavolume:
