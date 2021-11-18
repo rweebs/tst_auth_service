@@ -8,6 +8,9 @@ services:
       MYSQL_DATABASE: tst
     volumes:
       - my-datavolume:/var/lib/mysql
+    networks:
+      - tst
+    
 
   web:
     build: ./app
@@ -23,11 +26,19 @@ services:
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
+    networks:
+      - tst
   nginx:
     build: ./nginx
     ports:
       - 80:80
     depends_on:
       - web
+    networks:
+      - tst
 volumes:
   my-datavolume:
+
+networks:
+  tst:
+    driver: bridge
